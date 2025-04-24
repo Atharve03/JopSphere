@@ -7,6 +7,7 @@ import userRoute from './routes/userroutes.js';
 import companyRoute from './routes/companyroute.js';
 import jobRoute from './routes/jobroute.js';
 import applicationRoute from './routes/applicationroute.js';
+import path from 'path';
 
 dotenv.config(); // Load environment variables
 
@@ -16,18 +17,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+const _dirname = path.resolve();
+
 // Allow multiple origins
-const allowedOrigins = ['http://localhost:5005', 'http://localhost:5173'];
+
 const corsOptions = {
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true, // Allow credentials (cookies)
-};
+    origin:'http://localhost:5173',
+    credentials:true
+}
 app.use(cors(corsOptions));
 
 // Connect to MongoDB
@@ -38,7 +35,12 @@ app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use('/api/v1/application', applicationRoute);
 
+app.use(express.static(path.join(_dirname,"/frontend/dist")));
+app.get('*',(req,res)=>{
+    res.sendFile(path.resolve(_dirname,"frontend","dist", "index.html"))
+})
+
 app.listen(PORT, () => {
     connectDB();
-    console.log(`Server running at port ${PORT}`);
+    console.log(`Server running at port ${PORT}`); 
 });
