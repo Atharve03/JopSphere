@@ -22,7 +22,7 @@ const _dirname = path.resolve();
 // Allow multiple origins
 
 const corsOptions = {
-    origin:'http://localhost:5173',
+    origin:'https://jopsphere.onrender.com',
     credentials:true
 }
 app.use(cors(corsOptions));
